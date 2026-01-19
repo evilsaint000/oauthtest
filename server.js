@@ -8,12 +8,12 @@ const path = require('path');
 
 const app = express();
 
-// 1. Database Connection (MongoDB)
+
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('✅ MongoDB Connected'))
   .catch(err => console.log(err));
 
-// 2. Define User Schema
+
 const userSchema = new mongoose.Schema({
   googleId: String,
   displayName: String,
@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
 });
 const User = mongoose.model('User', userSchema);
 
-// 3. Passport Configuration
+//Passport Configuration
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -31,14 +31,14 @@ passport.use(new GoogleStrategy({
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
-      // Check if user already exists
+      
       let existingUser = await User.findOne({ googleId: profile.id });
       
       if (existingUser) {
         return done(null, existingUser);
       }
       
-      // If not, create new user in MongoDB
+     
       const newUser = await new User({
         googleId: profile.id,
         displayName: profile.displayName,
@@ -67,7 +67,7 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-// 4. Middleware Setup
+//  Middleware Setup
 app.set('view engine', 'ejs'); // Use EJS for frontend templating
 app.use(express.static('public')); // For CSS/Images
 app.use(session({
@@ -86,11 +86,11 @@ const isLoggedIn = (req, res, next) => {
   res.redirect('/');
 }
 
-// 5. Routes
+
 
 // Landing Page
 app.get('/', (req, res) => {
-  // If already logged in, go to dashboard
+  
   if (req.user) return res.redirect('/dashboard');
   res.render('index');
 });
@@ -123,5 +123,5 @@ app.get('/logout', (req, res, next) => {
 });
 
 app.listen(process.env.PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${process.env.PORT}`);
+  console.log(` Server running on http://localhost:${process.env.PORT}`);
 });
