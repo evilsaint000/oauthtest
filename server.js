@@ -97,7 +97,8 @@ app.get('/', (req, res) => {
 
 // Auth Route: Redirect to Google
 app.get('/auth/google', passport.authenticate('google', {
-  scope: ['profile', 'email']
+  scope: ['profile', 'email'],
+  prompt: 'select account'
 }));
 
 // Auth Callback: Google redirects back here
@@ -124,4 +125,5 @@ app.get('/logout', (req, res, next) => {
 
 app.listen(process.env.PORT, () => {
   console.log(` Server running on http://localhost:${process.env.PORT}`);
+
 });
